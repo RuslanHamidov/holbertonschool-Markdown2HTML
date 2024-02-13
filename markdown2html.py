@@ -1,13 +1,10 @@
 #!/usr/bin/python3
-
+import sys
 
 """
   python3 -c 'print(__import__("my_module").__doc__)'
 
 """
-
-
-import sys
 
 
 if __name__ == "__main__":
