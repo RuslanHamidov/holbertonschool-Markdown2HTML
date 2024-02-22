@@ -23,6 +23,13 @@ def parse_section(section_text):
         for _, words in lines_with_dashes:
             html_content += f"    <li>{words.strip()}</li>\n"
         html_content += "</ul>\n"
+        
+    lines_with_stars = re.findall(r'(*+)\s*(.*)', section_text)
+    if lines_with_stars:
+        html_content += "<ol>\n"
+        for _, words in lines_with_stars:
+            html_content += f"    <li>{words.strip()}</li>\n"
+        html_content += "</ol>\n"
 
     return html_content
 
