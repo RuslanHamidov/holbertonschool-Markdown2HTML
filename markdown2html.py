@@ -38,18 +38,7 @@ if __name__ == "__main__":
      sys.stderr.write("Missing " + args[1] +"\n")
      exit(1)
      
-  html = toHtml(text)
+  
   
   exit(0)
 
-
-
-
-'''# Extract hashes using regular expressions
-    
-
-    # Convert hashes to HTML
-    html_content = ""
-    for hash_count, title in hashes:
-        hash_level = len(hash_count)
-        html_content += f"<h{hash_level}>{title.strip()}</h{hash_level}>\n"'''
