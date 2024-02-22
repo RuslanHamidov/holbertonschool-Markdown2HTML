@@ -5,9 +5,11 @@
   python3 -c 'print(__import__("my_module").__doc__)'
 
 """
+
 import os
 import sys
 import re
+
 
 
 readme = sys.argv[1]
@@ -28,7 +30,6 @@ with open(readme, "r") as readme_file:
   #Function to parse
   html = toHtml(text)
    
-## Starting point of script
 
 if __name__ == "__main__":
   args = sys.argv
