@@ -44,19 +44,11 @@ if __name__ == "__main__":
     '''
     adding to html
     '''
-    lines_with_dashes = []
-    for line in text:
-         if '-' in line:
-           lines_with_dashes.append(line.strip())
+    lines_with_dashes = [line.strip() for line in text if '-' in line]
 
     if lines_with_dashes:
-        # Generate HTML unordered list
-        html_content = "<ul>\n"
-        for line in lines_with_dashes:
-            html_content += f"<li>{line}</li>\n"
-        html_content += "</ul>"
+        html_list = "<ul>\n" + '\n'.join([f"<li>{line}</li>" for line in lines_with_dashes]) + "\n</ul>"
 
-        
     return html_content
   
   html = toHtml(text)
