@@ -23,7 +23,7 @@ if __name__ == "__main__":
      sys.stderr.write("Missing " + args[1] +"\n")
      exit(1)
      
-  with open("README.md", "r") as f:
+  with open("fn_md", "r") as f:
     text = f.read()
   
   ## Parse from README to HTML
@@ -39,7 +39,7 @@ if __name__ == "__main__":
   html = toHtml(text)
    
   
-  with open('README.html', 'w') as f:
+  with open('fn_html', 'w') as f:
     f.write(html)
   
   exit(0)
