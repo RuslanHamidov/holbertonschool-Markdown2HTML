@@ -1,10 +1,3 @@
-#!/usr/bin/python3
-""" 
-Write a script markdown2html.py that takes an argument 2 strings:
-First argument is the name of the Markdown file
-Second argument is the output file name 
-"""
-
 import os
 import sys
 import re
@@ -53,4 +46,3 @@ if __name__ == "__main__":
         html_file.write(html_content)
 
     exit(0)
-
