@@ -47,7 +47,7 @@ if __name__ == "__main__":
     lines_with_dashes = [line.strip() for line in text if '-' in line]
 
     if lines_with_dashes:
-        html_list = "<ul>\n" + '\n'.join([f"<li>{line}</li>" for line in lines_with_dashes]) + "\n</ul>"
+        html_content += "<ul>\n" + '\n'.join([f"<li>{line}</li>" for line in lines_with_dashes]) + "\n</ul>"
 
     return html_content
   
