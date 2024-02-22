@@ -41,7 +41,9 @@ if __name__ == "__main__":
     for hash_count, title in hashes:
         hash_level = len(hash_count)
         html_content += f"<h{hash_level}>{title.strip()}</h{hash_level}>\n"
-        
+    '''
+    adding to html
+    '''
     for dash_count, title in dashes:
         html_content += f"<ul>\n<li>{title.strip()}</li>\n<ul>\n"
         
