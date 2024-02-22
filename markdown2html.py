@@ -13,6 +13,9 @@ with open(sys.argv[1], "r") as readme_file:
   text = readme_file.read()
   
   def toHtml(textfile):
+    '''
+    To parse file from readme to HTML
+    '''
     hashes = re.findall(r'(#+)\s*(.*)', textfile)
     html_content = ""
     for hash_count, title in hashes:
@@ -23,6 +26,9 @@ with open(sys.argv[1], "r") as readme_file:
   html = toHtml(text)
   
 if __name__ == "__main__":
+  '''
+  Starting point of script
+  '''
   args = sys.argv
   if len(args) < 3:
       sys.stderr.write("Usage: ./markdown2html.py README.md README.html\n")
