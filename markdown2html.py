@@ -10,20 +10,6 @@ import sys
 import re
 
 
-with open("README.md", "r") as f:
-  text = f.read()
-  
-  ## Parse from README to HTML
-  def toHtml(textfile):
-    hashes = re.findall(r'(#+)\s*(.*)', textfile)
-    html_content = ""
-    for hash_count, title in hashes:
-        hash_level = len(hash_count)
-        html_content += f"<h{hash_level}>{title.strip()}</h{hash_level}>\n"
-    return html_content
-  
-  #Function to parse
-html = toHtml(text)
 
 
 
@@ -37,6 +23,22 @@ if __name__ == "__main__":
      sys.stderr.write("Missing " + args[1] +"\n")
      exit(1)
      
+  with open("README.md", "r") as f:
+    text = f.read()
+  
+  ## Parse from README to HTML
+  def toHtml(textfile):
+    hashes = re.findall(r'(#+)\s*(.*)', textfile)
+    html_content = ""
+    for hash_count, title in hashes:
+        hash_level = len(hash_count)
+        html_content += f"<h{hash_level}>{title.strip()}</h{hash_level}>\n"
+    return html_content
+  
+  #Function to parse
+  html = toHtml(text)
+   
+  
   with open('README.html', 'w') as f:
     f.write(html)
   
