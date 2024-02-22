@@ -10,6 +10,9 @@ import sys
 import re
 
 with open(sys.argv[1], "r") as readme_file:
+  '''
+    Opening readme
+  '''
   text = readme_file.read()
   
   def toHtml(textfile):
