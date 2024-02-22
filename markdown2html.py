@@ -12,7 +12,7 @@ import re
 with open(sys.argv[1], "r") as readme_file:
   text = readme_file.read()
   
-  ## Parse from README to HTML
+  
   def toHtml(textfile):
     hashes = re.findall(r'(#+)\s*(.*)', textfile)
     html_content = ""
@@ -21,7 +21,7 @@ with open(sys.argv[1], "r") as readme_file:
         html_content += f"<h{hash_level}>{title.strip()}</h{hash_level}>\n"
     return html_content
   
-  #Function to parse
+  
   html = toHtml(text)
   
    
