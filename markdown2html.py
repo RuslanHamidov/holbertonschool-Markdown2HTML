@@ -23,10 +23,9 @@ with open("README.md", "r") as f:
     return html_content
   
   #Function to parse
-  
+html = toHtml(text)
 
-with open('README.html', 'w') as f:
-    f.write(html)
+
 
 if __name__ == "__main__":
   args = sys.argv
@@ -38,7 +37,8 @@ if __name__ == "__main__":
      sys.stderr.write("Missing " + args[1] +"\n")
      exit(1)
      
-  
+  with open('README.html', 'w') as f:
+    f.write(html)
   
   exit(0)
 
