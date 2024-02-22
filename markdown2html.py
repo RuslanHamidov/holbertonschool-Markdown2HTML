@@ -3,19 +3,13 @@
 
 """
   python3 -c 'print(__import__("my_module").__doc__)'
-
 """
 
 import os
 import sys
 import re
 
-
-
-readme = sys.argv[1]
-htmlfile = sys.argv[2]
-
-with open(readme, "r") as readme_file:
+with open(sys.argv[1], "r") as readme_file:
   text = readme_file.read()
   
   ## Parse from README to HTML
@@ -31,7 +25,6 @@ with open(readme, "r") as readme_file:
   html = toHtml(text)
   
    
-"""python3 -c 'print(__import__("my_module").__doc__)'"""
 
 
 if __name__ == "__main__":
@@ -45,7 +38,7 @@ if __name__ == "__main__":
      exit(1)
      
   
-  with open(htmlfile, 'w') as html_file:
+  with open(sys.argv[2], 'w') as html_file:
     html_file.write(html)
   
   exit(0)
