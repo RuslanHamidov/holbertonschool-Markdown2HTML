@@ -35,10 +35,16 @@ if __name__ == "__main__":
     To parse file from readme to HTML
     '''
     hashes = re.findall(r'(#+)\s*(.*)', textfile)
+    dashes = re.findall(r'(-+)\s*(.*)', textfile)
+
     html_content = ""
     for hash_count, title in hashes:
         hash_level = len(hash_count)
         html_content += f"<h{hash_level}>{title.strip()}</h{hash_level}>\n"
+        
+    for dash_count, title in dashes:
+        html_content += f"<ul>\n<li>{title.strip()}</li>\n<ul>\n"
+        
     return html_content
   
   html = toHtml(text)
