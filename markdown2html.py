@@ -44,7 +44,7 @@ if __name__ == "__main__":
     '''
     adding to html
     '''
-    for title in dashes:
+    for dash_count, title in dashes:
         html_content += f"<ul>\n<li>{title.strip()}</li>\n<ul>\n"
         
     return html_content
