@@ -35,7 +35,7 @@ if __name__ == "__main__":
     To parse file from readme to HTML
     '''
     hashes = re.findall(r'(#+)\s*(.*)', textfile)
-    dashes = re.findall(r'(-+)\s*(.*)', textfile)
+    
 
     html_content = ""
     for hash_count, title in hashes:
@@ -44,9 +44,17 @@ if __name__ == "__main__":
     '''
     adding to html
     '''
-    for line, title in dashes:
-        if '-' in line:
-          html_content += f"<ul>\n </ul>\n"
+    lines_with_dashes = []
+    for line in readme_file:
+         if '-' in line:
+           lines_with_dashes.append(line.strip())
+
+    if lines_with_dashes:
+        # Generate HTML unordered list
+        html_content = "<ul>\n"
+        for line in lines_with_dashes:
+            html_content += f"<li>{line}</li>\n"
+        html_content += "</ul>"
 
         
     return html_content
