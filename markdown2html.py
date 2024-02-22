@@ -46,7 +46,7 @@ if __name__ == "__main__":
     '''
     for line, title in dashes:
         if '-' in line:
-          html_content += f"<ul>\n<li>{title.strip()}</li>\n<ul>\n"
+          html_content += f"\n<li>{title.strip()}</li>\n\n"
 
         
     return html_content
