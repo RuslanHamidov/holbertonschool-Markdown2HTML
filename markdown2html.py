@@ -45,7 +45,7 @@ if __name__ == "__main__":
     adding to html
     '''
     lines_with_dashes = []
-    for line in readme_file:
+    for line in text:
          if '-' in line:
            lines_with_dashes.append(line.strip())
 
