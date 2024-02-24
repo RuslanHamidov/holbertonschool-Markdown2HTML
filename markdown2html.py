@@ -24,15 +24,29 @@ def parse_section(section_text):
             html_content += f"    <li>{words.strip()}</li>\n"
         html_content += "</ul>\n"
     
-    
-
     lines_with_stars = re.findall(r'(\*+)\s*(.*)', section_text) 
     if lines_with_stars:
         html_content += "<ol>\n"
         for _, words in lines_with_stars:
             html_content += f"    <li>{words.strip()}</li>\n"
         html_content += "</ol>\n"
-     
+        
+    paragraphs = re.split(r"\n\s*\n", section_text.strip())
+    if not headings and not lines_with_dashes:
+        for paragraph in paragraphs:
+            html_paragraph = paragraph.replace('\n', '<br>')
+            html_content += f"<p>{html_paragraph}</p>\n"
+    
+    lines_with_double_stars = re.findall(r'(\*\*+)\s*(.*)', section_text) 
+    if lines_with_double_stars:
+        for _, word in lines_with_double_stars:
+          html_content += f"<b>{word.strip()}</b>\n"
+    
+    lines_with_underline = re.findall(r'(__+)\s*(.*)', section_text) 
+    if lines_with_underline:
+        for _, word in lines_with_underline:
+          html_content += f"<em>{word.strip()}</em>\n"
+    
     return html_content
 
 if __name__ == "__main__":

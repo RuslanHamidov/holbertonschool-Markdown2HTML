@@ -11,3 +11,12 @@
 
 * new
 * one
+
+paragraph
+paragraph2
+
+paragraph3
+
+**Hello**
+__Hello__
+
