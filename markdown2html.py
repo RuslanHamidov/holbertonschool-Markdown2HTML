@@ -1,99 +1,76 @@
 #!/usr/bin/python3
-""" 
-Write a script markdown2html.py that takes an argument 2 strings:
-First argument is the name of the Markdown file
-Second argument is the output file name 
-"""
-
-import os
+''' Markdown to HTML '''
 import sys
-import re
-import hashlib
+from os import path
+
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Usage: ./markdown2html.py README.md README.html", file=sys.stderr)
+    '''the number of arguments is less than 2'''
+    if len(sys.argv) != 3:
+        print('Usage: ./markdown2html.py README.md README.html' ,file=sys.stderr)
         exit(1)
-
-    if not os.path.exists(sys.argv[1]):
-        print(f"Missing {sys.argv[1]}", file=sys.stderr)
+    '''Markdown file doesn’t exist'''
+    if not path.exists(sys.argv[1]):
+        print('Missing {}'.format(sys.argv[1]), file=sys.stderr)
         exit(1)
+    '''Headings Markdown'''
+    with open(sys.argv[1], 'r') as read_file:
+        line_list = []
+        for lines in read_file.readlines():
+            number_of_hashes = 0
+            for line in lines:
+                for car in range(len(line)):
+                    if line[car] == '#':
+                        number_of_hashes += 1
+            lines = lines.rstrip('\r\n')
+            if number_of_hashes != 0:
+                line_list.append("<h{}>{}</h{}>".format(number_of_hashes, lines.replace('#',''), number_of_hashes))
+        with open(sys.argv[2], 'a') as write_file:
+            for line in line_list:
+                write_file.write('{}\n'.format(line))
+    '''Unordered Listing'''
+    def convert_unordered_listing(line):
+        items = line.split('-')[1:]
+        html = "<ul>\n"
+        for item in items:
+            item = item.strip()
+        if item:
+            html += f"    <li>{item.strip()}</li>\n"
+        html += "</ul>"
+        return html
 
-    readme = sys.argv[1]
-    html = sys.argv[2]
+def markdown_to_html(input_file, output_file):
+    with open(input_file, 'r') as md_file:
+        lines = md_file.readlines()
 
-    with open(readme, "r", encoding="utf-8") as readme_file:
-        lines = readme_file.readlines()
+    html_lines = []
+    in_unordered_listing = False
 
-        with open(readhtml, "w", encoding="utf-8") as html:
-            in_list = False
-            in_ord_list = False
-            p_open = False
+    for line in lines:
+        if line.startswith('-'):
+            if not in_unordered_listing:
+                html_lines.append("<ul>")
+                in_unordered_listing = True
+            html_lines.append(f"    <li>{line.strip('-').strip()}</li>")
+        else:
+            if in_unordered_listing:
+                html_lines.append("</ul>")
+                in_unordered_listing = False
+            html_lines.append(line)
 
-            for i, line in enumerate(lines):
-                
-                line = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', line)
-                
-               
-                line = re.sub(r'__(.*?)__', r'<em>\1</em>', line)
-                
-                if in_list and not (line.startswith('-')):
-                    html.write("</ul>\n")
-                    in_list = False
-                if in_ord_list and not (line.startswith('*')):
-                    html.write("</ol>\n")
-                    in_ord_list = False
-                    
-                if p_open and (
-                    line.startswith("*")
-                    or line.startswith("#")
-                    or line.startswith("-")
-                    or line.startswith("\n") 
-                ):
-                    html.write(f"</p>\n")
-                    p_open = False
-                
-                if re.search(r'\(\((.*?)\)\)', line):
-                    # Search (( )) in line and remove all c
-                    match = re.search(r'\(\((.*?)\)\)', line)
-                    without_c = match.group(1)
-                    line_without_c = re.sub(r'c', r'', without_c, flags=re.IGNORECASE)
-                    line = re.sub(without_c, line_without_c, line, flags=re.IGNORECASE)
-                line = re.sub(r'\(\(|\)\)', r'', line)
-                
-                
-                if re.search(r'\[\[(.*?)\]\]', line):
-                    match = re.search(r'\[\[(.*?)\]\]', line)
-                    content = match.group(1)
-                    hashed = hashlib.md5(content.encode('utf-8')).hexdigest()
-                    line = re.sub(content, hashed, line, flags=re.IGNORECASE)
-                line = re.sub(r'\[\[|\]\]', r'', line)
-                
+    if in_unordered_listing:
+        html_lines.append("</ul>")
 
-                if line.startswith("#"):
-                    count = 0
-                    for char in line:
-                        if char == "#":
-                            count += 1
-                    if count > 0:
-                        html.write(
-                            f"<h{count}>{line.strip('#').strip()}</h{count}>\n"
-                        )
-                elif line.startswith("-"):
-                    if not in_list:
-                        html.write("<ul>\n")
-                        in_list = True
-                    html.write(f"<li>{line.lstrip('-').strip()}</li>\n")
-                elif line.startswith("*"):
-                    if not in_ord_list:
-                        html.write("<ol>\n")
-                        in_ord_list = True
-                    html.write(f"<li>{line.lstrip('*').strip()}</li>\n")
-                elif not line.startswith("\n"):
-                    if not p_open:
-                        html.write(f"<p>\n")
-                        p_open = True
-                    else:
-                        html.write(f"<br />\n")
+    with open(output_file, 'w') as html_file:
+        for line in html_lines:
+            html_file.write(line)
 
-                    html.write(f"{line.strip()}\n")
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Usage: markdown2html.py README.md README.html")
+        sys.exit(1)
+
+    input_file = sys.argv[1]
+    output_file = sys.argv[2]
+
+    markdown_to_html(input_file, output_file)
