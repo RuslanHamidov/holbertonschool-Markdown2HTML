@@ -40,12 +40,12 @@ def parse_section(section_text):
     lines_with_double_stars = re.findall(r'(\*\*+)\s*(.*)', section_text) 
     if lines_with_double_stars:
         for _, word in lines_with_double_stars:
-          html_content += f"<b>{word.strip()}</b>\n"
+          html_content += f"<b>{word.strip('*')}</b>\n"
     
     lines_with_underline = re.findall(r'(__+)\s*(.*)', section_text) 
     if lines_with_underline:
         for _, word in lines_with_underline:
-          html_content += f"<em>{word.strip()}</em>\n"
+          html_content += f"<em>{word.strip(_)}</em>\n"
     
     return html_content
 
