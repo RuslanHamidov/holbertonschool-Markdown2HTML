@@ -30,17 +30,28 @@ def parse_section(section_text):
         for _, words in lines_with_stars:
             html_content += f"    <li>{words.strip()}</li>\n"
         html_content += "</ol>\n"
-    
+        
     paragraphs = re.split(r"\n\s*\n", section_text.strip())
-    for paragraph in paragraphs:
-        if paragraph:
-            # Replace newline characters with <br /> tags
-            html_paragraph = paragraph.replace('\n', '<br />')
+    if not headings and not lines_with_dashes:
+        for paragraph in paragraphs:
+            html_paragraph = paragraph.replace('\n', '<br>')
             html_content += f"<p>{html_paragraph}</p>\n"
-         
-
-            
     
+    
+    for i, line in enumerate(section_text):
+                # Search ** ** and replace by <b> </b>
+        line = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', line)
+                
+                # Search __ __ and replace by <em> </em>
+        line = re.sub(r'__(.*?)__', r'<em>\1</em>', line)
+    
+    """ lines_with_double_stars = re.findall(r'(\*\*+)\s*(.*)', section_text)
+    for _, word in lines_with_double_stars:
+        html_content += f"<b>{word.strip('*')}</b>\n"
+    
+    lines_with_underline = re.findall(r'(__+)\s*(.*)', section_text) 
+    for _, word in lines_with_underline:
+      html_content += f"<em>{word.strip(_)}</em>\n" """
     
     return html_content
 

@@ -8,72 +8,92 @@ Second argument is the output file name
 import os
 import sys
 import re
-
-def parse_section(section_text):
-    headings = re.findall(r'(#+)\s*(.*)', section_text)
-    html_content = ""
-    if headings:
-        for hash_count, title in headings:
-            hash_level = len(hash_count)
-            html_content += f"<h{hash_level}>{title.strip()}</h{hash_level}>\n"
-
-    lines_with_dashes = re.findall(r'(-+)\s*(.*)', section_text)
-    if lines_with_dashes:
-        html_content += "<ul>\n"
-        for _, words in lines_with_dashes:
-            html_content += f"    <li>{words.strip()}</li>\n"
-        html_content += "</ul>\n"
-    
-    lines_with_stars = re.findall(r'(\*+)\s*(.*)', section_text) 
-    if lines_with_stars:
-        html_content += "<ol>\n"
-        for _, words in lines_with_stars:
-            html_content += f"    <li>{words.strip()}</li>\n"
-        html_content += "</ol>\n"
-        
-    paragraphs = re.split(r"\n\s*\n", section_text.strip())
-    if not headings and not lines_with_dashes:
-        for paragraph in paragraphs:
-            html_paragraph = paragraph.replace('\n', '<br>')
-            html_content += f"<p>{html_paragraph}</p>\n"
-    
-    lines_with_double_stars = re.findall(r'(\*\*+)\s*(.*)', section_text) 
-    if lines_with_double_stars:
-        for _, word in lines_with_double_stars:
-          html_content += f"<b>{word.strip('*')}</b>\n"
-    
-    lines_with_underline = re.findall(r'(__+)\s*(.*)', section_text) 
-    if lines_with_underline:
-        for _, word in lines_with_underline:
-          html_content += f"<em>{word.strip(_)}</em>\n"
-    
-    return html_content
+import hashlib
 
 if __name__ == "__main__":
-    args = sys.argv
-    if len(args) != 3:
-        sys.stderr.write("Usage: ./markdown2html.py README.md README.html\n")
+    if len(sys.argv) < 3:
+        print("Usage: ./markdown2html.py README.md README.html", file=sys.stderr)
         exit(1)
 
-    input_file = args[1]
-    output_file = args[2]
-
-    if not os.path.exists(input_file):
-        sys.stderr.write(f"Missing {input_file}\n")
+    if not os.path.exists(sys.argv[1]):
+        print(f"Missing {sys.argv[1]}", file=sys.stderr)
         exit(1)
 
-    with open(input_file, "r") as readme_file:
-        text = readme_file.read()
+    readme = sys.argv[1]
+    html = sys.argv[2]
 
-    sections = re.split(r'(#{1,6}\s+.*)', text)  # Split text into sections based on headings
+    with open(readme, "r", encoding="utf-8") as readme_file:
+        lines = readme_file.readlines()
 
-    html_content = ""
-    for section_text in sections:
-        if section_text.strip():  # Skip empty sections
-            html_content += parse_section(section_text)
+        with open(readhtml, "w", encoding="utf-8") as html:
+            in_list = False
+            in_ord_list = False
+            p_open = False
 
-    with open(output_file, 'w') as html_file:
-        html_file.write(html_content)
+            for i, line in enumerate(lines):
+                
+                line = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', line)
+                
+               
+                line = re.sub(r'__(.*?)__', r'<em>\1</em>', line)
+                
+                if in_list and not (line.startswith('-')):
+                    html.write("</ul>\n")
+                    in_list = False
+                if in_ord_list and not (line.startswith('*')):
+                    html.write("</ol>\n")
+                    in_ord_list = False
+                    
+                if p_open and (
+                    line.startswith("*")
+                    or line.startswith("#")
+                    or line.startswith("-")
+                    or line.startswith("\n") 
+                ):
+                    html.write(f"</p>\n")
+                    p_open = False
+                
+                if re.search(r'\(\((.*?)\)\)', line):
+                    # Search (( )) in line and remove all c
+                    match = re.search(r'\(\((.*?)\)\)', line)
+                    without_c = match.group(1)
+                    line_without_c = re.sub(r'c', r'', without_c, flags=re.IGNORECASE)
+                    line = re.sub(without_c, line_without_c, line, flags=re.IGNORECASE)
+                line = re.sub(r'\(\(|\)\)', r'', line)
+                
+                
+                if re.search(r'\[\[(.*?)\]\]', line):
+                    match = re.search(r'\[\[(.*?)\]\]', line)
+                    content = match.group(1)
+                    hashed = hashlib.md5(content.encode('utf-8')).hexdigest()
+                    line = re.sub(content, hashed, line, flags=re.IGNORECASE)
+                line = re.sub(r'\[\[|\]\]', r'', line)
+                
 
-    exit(0)
+                if line.startswith("#"):
+                    count = 0
+                    for char in line:
+                        if char == "#":
+                            count += 1
+                    if count > 0:
+                        html.write(
+                            f"<h{count}>{line.strip('#').strip()}</h{count}>\n"
+                        )
+                elif line.startswith("-"):
+                    if not in_list:
+                        html.write("<ul>\n")
+                        in_list = True
+                    html.write(f"<li>{line.lstrip('-').strip()}</li>\n")
+                elif line.startswith("*"):
+                    if not in_ord_list:
+                        html.write("<ol>\n")
+                        in_ord_list = True
+                    html.write(f"<li>{line.lstrip('*').strip()}</li>\n")
+                elif not line.startswith("\n"):
+                    if not p_open:
+                        html.write(f"<p>\n")
+                        p_open = True
+                    else:
+                        html.write(f"<br />\n")
 
+                    html.write(f"{line.strip()}\n")
